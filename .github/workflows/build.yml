@@ -1,16 +1,16 @@
 # ============================================================
 # DREAM VALLEY 3D
 # v10 MAXIMUM PROCEDURAL: geen externe 2D/3D game-assets nodig
-# v10.4 FIX: dubbele friendship/inventory/grafische state opgelost
-# v10.4 FIX: beide beschadigde function declarations gerepareerd
-# v10.4 FIX: foutieve dubbele punt achter function-call(s) verwijderd
-# v10.4 CAREFUL REBUILD: alle lokale functie-aanroepen op argumentaantal gecontroleerd + echte Godot parse-gate
+# v10.5 FIX: dubbele friendship/inventory/grafische state opgelost
+# v10.5 FIX: beide beschadigde function declarations gerepareerd
+# v10.5 FIX: foutieve dubbele punt achter function-call(s) verwijderd
+# v10.5 CAREFUL REBUILD: alle lokale functie-aanroepen op argumentaantal gecontroleerd + echte Godot parse-gate
 # CI OPTIMIZED: grote base64 payloads in 4096-byte chunks, fail-fast en voortgangslogging
-# BUILD VERSION: v10.4
+# BUILD VERSION: v10.5
 # EDITION: ULTIMATE EDITION
 # BUILD: MAX GRAPHICS / HORSE RIDING / DIALOGUE / SAFE WORLD / HOME LIFE
 # ============================================================
-name: Dream Valley 3D v10.4 - MAXIMUM PROCEDURAL EDITION
+name: Dream Valley 3D v10.5 - MAXIMUM PROCEDURAL EDITION
 on:
   workflow_dispatch:
 jobs:
@@ -83,7 +83,7 @@ jobs:
           export_filter="all_resources"
           include_filter=""
           exclude_filter=""
-          export_path="Dream-Valley-3D-v10.4.apk"
+          export_path="Dream-Valley-3D-v10.5.apk"
           script_export_mode=2
 
           [preset.0.options]
@@ -96,8 +96,8 @@ jobs:
           keystore/debug_password="android"
           architectures/armeabi-v7a=false
           architectures/arm64-v8a=true
-          version/code=1040
-          version/name="10.4"
+          version/code=1050
+          version/name="10.5"
           package/unique_name="com.dreamvalley.game"
           package/name="Dream Valley 3D"
           package/signed=true
@@ -253,9 +253,12 @@ jobs:
           echo "Godot 4.4 Android CI configuration OK"
 
       - name: Parse-check Main.gd with Godot
+        shell: bash
         run: |
           set -euo pipefail
-          godot --headless --path game --check-only --script Main.gd
+          test -x ./godot
+          ./godot --version
+          ./godot --headless --path game --check-only --script Main.gd
           echo "GDScript parse-check: OK"
 
       - name: Import and validate project
@@ -322,8 +325,8 @@ jobs:
 
           echo "=== Deep preflight ==="
           grep -F 'textures/vram_compression/import_etc2_astc=true' project.godot
-          grep -F 'export_path="Dream-Valley-3D-v10.4.apk"' export_presets.cfg
-          grep -F 'version/name="10.4"' export_presets.cfg
+          grep -F 'export_path="Dream-Valley-3D-v10.5.apk"' export_presets.cfg
+          grep -F 'version/name="10.5"' export_presets.cfg
           grep -F 'architectures/arm64-v8a=true' export_presets.cfg
           test -s Main.gd
           test -s Main.tscn
@@ -336,12 +339,12 @@ jobs:
 
           echo "=== Validate project pack before APK ==="
           mkdir -p ci-test
-          timeout 300s ../godot --headless --verbose --path . --export-pack "Android" "ci-test/Dream-Valley-v10.4-test.pck" 2>&1 | tee ../godot-pack-test.log
-          test -s ci-test/Dream-Valley-v10.4-test.pck
+          timeout 300s ../godot --headless --verbose --path . --export-pack "Android" "ci-test/Dream-Valley-v10.5-test.pck" 2>&1 | tee ../godot-pack-test.log
+          test -s ci-test/Dream-Valley-v10.5-test.pck
 
           echo "=== Export Android debug APK ==="
           set +e
-          timeout 900s ../godot --headless --verbose --path . --export-debug "Android" "Dream-Valley-3D-v10.4.apk" 2>&1 | tee ../godot-export.log
+          timeout 900s ../godot --headless --verbose --path . --export-debug "Android" "Dream-Valley-3D-v10.5.apk" 2>&1 | tee ../godot-export.log
           GODOT_EXIT=${PIPESTATUS[0]}
           set -e
 
@@ -351,13 +354,13 @@ jobs:
             exit "$GODOT_EXIT"
           fi
 
-          test -s Dream-Valley-3D-v10.4.apk
+          test -s Dream-Valley-3D-v10.5.apk
           echo "=== APK CREATED SUCCESSFULLY ==="
-          ls -lh Dream-Valley-3D-v10.4.apk
+          ls -lh Dream-Valley-3D-v10.5.apk
 
       - name: Upload installable APK
         uses: actions/upload-artifact@v4
         with:
-          name: Dream-Valley-3D-v10.4-APK
-          path: game/Dream-Valley-3D-v10.4.apk
+          name: Dream-Valley-3D-v10.5-APK
+          path: game/Dream-Valley-3D-v10.5.apk
           if-no-files-found: error
