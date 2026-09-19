@@ -238,7 +238,8 @@ jobs:
           EOF
 
           echo "=== Godot 4.4 editor settings ==="
-          cat "$HOME/.config/godot/editor_settings-4.4.tres"
+          ls -la "$HOME/.config/godot/" || true
+          cat "$HOME/.config/godot/editor_settings-4.7.tres" 2>/dev/null || true
 
           test -x "$ANDROID_HOME/platform-tools/adb"
           test -d "$JAVA_HOME"
@@ -328,7 +329,7 @@ jobs:
           echo "=== Deep preflight ==="
           grep -F 'textures/vram_compression/import_etc2_astc=true' project.godot
           grep -F 'export_path="Dream-Valley-3D-v11.0.apk"' export_presets.cfg
-          grep -F 'version/name="10.8"' export_presets.cfg
+          grep -F 'version/name="11.0"' export_presets.cfg
           grep -F 'architectures/arm64-v8a=true' export_presets.cfg
           test -s Main.gd
           test -s Main.tscn
