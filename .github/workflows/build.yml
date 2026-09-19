@@ -6,11 +6,11 @@
 # v11.3 FIX: foutieve dubbele punt achter function-call(s) verwijderd
 # v11.3 CAREFUL REBUILD: alle lokale functie-aanroepen op argumentaantal gecontroleerd + echte Godot parse-gate
 # CI OPTIMIZED: grote base64 payloads in 4096-byte chunks, fail-fast en voortgangslogging
-# BUILD VERSION: v11.5
+# BUILD VERSION: v11.6
 # EDITION: ULTIMATE EDITION
 # BUILD: MAX GRAPHICS / HORSE RIDING / DIALOGUE / SAFE WORLD / HOME LIFE
 # ============================================================
-name: Dream Valley 3D v11.5 - EXPORT VALIDATION FIX
+name: Dream Valley 3D v11.6 - PROJECT PATH FIX
 on:
   workflow_dispatch:
 jobs:
@@ -347,7 +347,7 @@ jobs:
           echo "=== Validate Android preset + signing tuple ==="
 
           echo "=== Deep preflight ==="
-          grep -F 'textures/vram_compression/import_etc2_astc=true' project.godot
+          grep -F 'textures/vram_compression/import_etc2_astc=true' "$GITHUB_WORKSPACE/game/project.godot"
           grep -F 'export_path="Dream-Valley-3D-v11.3.apk"' export_presets.cfg
           grep -F 'version/name="11.3"' export_presets.cfg
           grep -F 'architectures/arm64-v8a=true' export_presets.cfg
