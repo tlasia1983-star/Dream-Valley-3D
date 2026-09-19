@@ -6,11 +6,11 @@
 # v11.3 FIX: foutieve dubbele punt achter function-call(s) verwijderd
 # v11.3 CAREFUL REBUILD: alle lokale functie-aanroepen op argumentaantal gecontroleerd + echte Godot parse-gate
 # CI OPTIMIZED: grote base64 payloads in 4096-byte chunks, fail-fast en voortgangslogging
-# BUILD VERSION: v11.3
+# BUILD VERSION: v11.4
 # EDITION: ULTIMATE EDITION
 # BUILD: MAX GRAPHICS / HORSE RIDING / DIALOGUE / SAFE WORLD / HOME LIFE
 # ============================================================
-name: Dream Valley 3D v11.3 - JAZZ CHARACTER & COLOR FIX
+name: Dream Valley 3D v11.4 - MAIN.GD RECOVERY FIX
 on:
   workflow_dispatch:
 jobs:
@@ -58,6 +58,24 @@ jobs:
             'ZD1yKnRvdWNoLngrZiotdG91Y2gueQogdmFyIHNwZWVkPTQuOAogaWYgcmlkaW5nOnNwZWVkPTkuMgogaWYgcmlkaW5nIGFuZCBpc19pbnN0YW5jZV92YWxpZChob3JzZV9ub2RlKToKICB2YXIgbW92ZT1kKnNwZWVkKmRlbHRhCiAgaWYgbW92ZS5sZW5ndGgoKT4uMDAxOgogICB2YXIgc3BhY2U9d29ybGQuZ2V0X3dvcmxkXzNkKCkuZGlyZWN0X3NwYWNlX3N0YXRlCiAgIHZhciBibG9ja2VkPWZhbHNlCiAgIHZhciBkaXI9bW92ZS5ub3JtYWxpemVkKCkKICAgdmFyIHNpZGU9VmVjdG9yMygtZGlyLnosMCxkaXIueCkKICAgZm9yIG9mZiBpbiBbLS40OCwwLjAsLjQ4XToKICAgIHZhciBmcm9tPWhvcnNlX25vZGUuZ2xvYmFsX3Bvc2l0aW9uK1ZlY3RvcjMoMCwxLjAsMCkrc2lkZSpvZmYKICAgIHZhciBxPVBoeXNpY3NSYXlRdWVyeVBhcmFtZXRlcnMzRC5jcmVhdGUoZnJvbSxmcm9tK2RpcioxLjU1KQogICAgcS5jb2xsaWRlX3dpdGhfYXJlYXM9ZmFsc2UKICAgIGlmIG5vdCBzcGFjZS5pbnRlcnNlY3RfcmF5KHEpLmlzX2VtcHR5KCk6YmxvY2tlZD10cnVlCiAgIGlmIG5vdCBibG9ja2VkOmhvcnNlX25vZGUuZ2xvYmFsX3Bvc2l0aW9uKz1tb3ZlCiAgaG9yc2Vfbm9kZS5nbG9iYWxfcG9zaXRpb24ueD1jbGFtcChob3JzZV9ub2RlLmdsb2JhbF9wb3NpdGlvbi54LC13b3JsZF9saW1pdCx3b3JsZF9saW1pdCkKICBob3JzZV9ub2RlLmdsb2JhbF9wb3NpdGlvbi56PWNsYW1wKGhvcnNlX25vZGUuZ2xvYmFsX3Bvc2l0aW9uLnosLXdvcmxkX2xpbWl0LHdvcmxkX2xpbWl0KQogIGlmIGQubGVuZ3RoKCk+LjE6CiAgIGhvcnNlX25vZGUucm90YXRpb24ueT1hdGFuMigtZC54LC1kLnopCiAgIGhvcnNlX25vZGUucG9zaXRpb24ueT1hYnMoc2luKGxpdmluZ190aW1lKjEwLjApKSouMDI1CiAgcGxheWVyLnBvc2l0aW9uPVZlY3RvcjMoMCwxLjcyLC4wNSkKIGVsc2U6CiAgcGxheWVyLnZlbG9jaXR5Lng9ZC54KnNwZWVkO3BsYXllci52ZWxvY2l0eS56PWQueipzcGVlZAogIGlmIG5vdCBwbGF5ZXIuaXNfb25fZmxvb3IoKTpwbGF5ZXIudmVsb2NpdHkueS09MTgqZGVsdGEKICBlbHNlOnBsYXllci52ZWxvY2l0eS55PTAKICBwbGF5ZXIubW92ZV9hbmRfc2xpZGUoKQogIGlmIGQubGVuZ3RoKCk+LjE6cGxheWVyLnJvdGF0aW9uLnk9YXRhbjIoLWQueCwtZC56KQogIGlmIHBsYXllci5pc19vbl9mbG9vcigpIGFuZCBwbGF5ZXIuZ2xvYmFsX3Bvc2l0aW9uLnk+LS41Omxhc3Rfc2FmZV9wb3NpdGlvbj1wbGF5ZXIuZ2xvYmFsX3Bvc2l0aW9uCiAgcGxheWVyLmdsb2JhbF9wb3NpdGlvbi54PWNsYW1wKHBsYXllci5nbG9iYWxfcG9zaXRpb24ueCwtd29ybGRfbGltaXQsd29ybGRfbGltaXQpCiAgcGxheWVyLmdsb2JhbF9wb3NpdGlvbi56PWNsYW1wKHBsYXllci5nbG9iYWxfcG9zaXRpb24ueiwtd29ybGRfbGltaXQsd29ybGRfbGltaXQpCiAgaWYgcGxheWVyLmdsb2JhbF9wb3NpdGlvbi55IDwgLTguMDoKICAgcGxheWVyLmdsb2JhbF9wb3NpdGlvbj1sYXN0X3NhZmVfcG9zaXRpb24rVmVjdG9yMygwLC40LDApO3BsYXllci52ZWxvY2l0eT1WZWN0b3IzLlpFUk87bm90aWZ5KCJKYXp6IGlzIHZlaWxpZyB0ZXJ1Z2dlemV0LiIpCiBpZiBtaW5pbWFwX2NhbToKICB2YXIgdGFyZ2V0PWhvcnNlX25vZGUuZ2xvYmFsX3Bvc2l0aW9uIGlmIHJpZGluZyBhbmQgaXNfaW5zdGFuY2VfdmFsaWQoaG9yc2Vfbm9kZSkgZWxzZSBwbGF5ZXIuZ2xvYmFsX3Bvc2l0aW9uCiAgbWluaW1hcF9jYW0uZ2xvYmFsX3Bvc2l0aW9uPXRhcmdldCtWZWN0b3IzKDAsNDUsMCkKICBtaW5pbWFwX2NhbS5yb3RhdGlvbl9kZWdyZWVzPVZlY3RvcjMoLTkwLC1yYWRfdG9fZGVnKHBsYXllci5nbG9iYWxfcm90YXRpb24ueSksMCkKIGxpdmluZ190aW1lKz1kZWx0YTtnYW1lX21pbnV0ZXMrPWRlbHRhKjIuMgogaWYgZ2FtZV9taW51dGVzPj0xNDQwLjA6ZGF5Kz0xO2dhbWVfbWludXRlcy09MTQ0MC4wCiB3ZWF0aGVyPSJaT05OSUciIGlmIGludChkYXkrZ2FtZV9taW51dGVzLzE4MC4wKSU1IT0wIGVsc2UgIkJFV09MS1QiCiBhdXRvc2F2ZV9jbG9jays9ZGVsdGEKIGlmIGF1dG9zYXZlX2Nsb2NrPjYwLjA6YXV0b3NhdmVfY2xvY2s9MC4wO3NhdmVfZ2FtZSgpCiB1cGRhdGVfY2xvY2tfdWkoKTt1cGRhdGVfaW50ZXJhY3Rpb25faGludCgpO3N0b3J5X3VwZGF0ZSgpCiBuZWVkc1siaHVuZ2VyIl09bWF4KDAuMCxmbG9hdChuZWVkc1siaHVuZ2VyIl0pLWRlbHRhKi4xMikKIG5lZWRzWyJlbmVyZ3kiXT1tYXgoMC4wLGZsb2F0KG5lZWRzWyJlbmVyZ3kiXSktZGVsdGEqLjA4KQogbmVlZHNbImZ1biJdPW1heCgwLjAsZmxvYXQobmVlZHNbImZ1biJdKS1kZWx0YSouMDYpCiBuZWVkc1sic29jaWFsIl09bWF4KDAuMCxmbG9hdChuZWVkc1sic29jaWFsIl0pLWRlbHRhKi4wNCkKIGlmIGludChsaXZpbmdfdGltZSklMz09MDp1cGRhdGVfbmVlZHMoKQogZm9yIG4gaW4gbnBjX25vZGVzOgogIGlmIG5vdCBpc19pbnN0YW5jZV92YWxpZChuKTpjb250aW51ZQogIHZhciBhY3Q9c3RyKG4uZ2V0X21ldGEoImFjdGl2aXR5IikpO3ZhciBob21lOlZlY3RvcjM9bi5nZXRfbWV0YSgiaG9tZSIpO3ZhciBwaD1mbG9hdChuLmdldF9tZXRhKCJwaGFzZSIpKQogIHZhciBob3VyPWludChnYW1lX21pbnV0ZXMvNjAuMCklMjQKICBpZiBob3VyPj0yMiBvciBob3VyPDc6bi5wb3NpdGlvbj1ob21lO24ucm90YXRpb24ueT0wCiAgZWxpZiBhY3Q9PSJ3YW5kZWx0IjpuLnBvc2l0aW9uPWhvbWUrVmVjdG9yMyhzaW4obGl2aW5nX3RpbWUqLjQ1K3BoKSo0LjAsMCxjb3MobGl2aW5nX3RpbWUqLjQ1K3BoKSoyLjApO24ucm90YXRpb24ueT1saXZpbmdfdGltZSouNDUrcGgKICBlbGlmIGFjdD09InBvZXRzdCBoZXQgaHVpcyI6bi5wb3NpdGlvbj1ob21lK1ZlY3RvcjMoc2luKGxpdmluZ190aW1lKjEuNCtwaCkqMS4yLGFicyhzaW4obGl2aW5nX3RpbWUqMi44K3BoKSkqLjA1LDApCiAgZWxpZiBhY3Q9PSJrb29rdCBldGVuIjpuLnJvdGF0aW9uLnk9c2luKGxpdmluZ190aW1lKi44K3BoKSouMzUKICBlbGlmIGFjdD09InppdCBpbiBkZSB0dWluIjpuLnJvdGF0aW9uLng9ZGVnX3RvX3Jh' \
             'ZCgtNCtzaW4obGl2aW5nX3RpbWUrcGgpKjIpCiAgZWxpZiBhY3Q9PSJ2ZXJ6b3JndCBwYWFyZGVuIjpuLnBvc2l0aW9uPWhvbWUrVmVjdG9yMyhzaW4obGl2aW5nX3RpbWUqLjU1K3BoKSoxLjUsMCxjb3MobGl2aW5nX3RpbWUqLjU1K3BoKSouNykKIGZvciBhIGluIGFuaW1hbF9ub2RlczoKICBpZiBub3QgaXNfaW5zdGFuY2VfdmFsaWQoYSk6Y29udGludWUKICB2YXIgYWg6VmVjdG9yMz1hLmdldF9tZXRhKCJob21lIik7dmFyIGFwPWZsb2F0KGEuZ2V0X21ldGEoInBoYXNlIikpCiAgYS5wb3NpdGlvbj1haCtWZWN0b3IzKHNpbihsaXZpbmdfdGltZSouNjUrYXApKjEuMixhYnMoc2luKGxpdmluZ190aW1lKjEuMythcCkpKi4wMzUsY29zKGxpdmluZ190aW1lKi41NSthcCkqMS4wKQogIGEucm90YXRpb24ueT1saXZpbmdfdGltZSouMzUrYXAKIHZhciBjYW1fdGFyZ2V0PWhvcnNlX25vZGUuZ2xvYmFsX3Bvc2l0aW9uIGlmIHJpZGluZyBhbmQgaXNfaW5zdGFuY2VfdmFsaWQoaG9yc2Vfbm9kZSkgZWxzZSBwbGF5ZXIuZ2xvYmFsX3Bvc2l0aW9uCiB2YXIgY2FtX3NpZGU9VmVjdG9yMyhjb3MoeWF3KSwwLC1zaW4oeWF3KSkqLjg1IGlmIHJpZGluZyBlbHNlIFZlY3RvcjMuWkVSTwogdmFyIGNhbV9oZWlnaHQ9NC4xNSBpZiByaWRpbmcgZWxzZSAzLjU1CiB2YXIgd2FudGVkPWNhbV90YXJnZXQtZio2LjgrVmVjdG9yMygwLGNhbV9oZWlnaHQsMCkrY2FtX3NpZGUKIGNhbS5nbG9iYWxfcG9zaXRpb249Y2FtLmdsb2JhbF9wb3NpdGlvbi5sZXJwKHdhbnRlZCxtaW4oMS4wLGRlbHRhKjcpKQogY2FtLmxvb2tfYXQoY2FtX3RhcmdldCtWZWN0b3IzKDAsMS42NSBpZiByaWRpbmcgZWxzZSAxLjI1LDApKQogZm9yIGMgaW4gd29ybGQuZ2V0X2NoaWxkcmVuKCk6CiAgaWYgYy5oYXNfbWV0YSgic3RhciIpIGFuZCBwbGF5ZXIuZ2xvYmFsX3Bvc2l0aW9uLmRpc3RhbmNlX3RvKGMuZ2xvYmFsX3Bvc2l0aW9uKTwxLjE6c3RhcnMrPTE7Y29pbnMrPTE1O3BsYXkoInNwYXJrbGUiKTtjLnF1ZXVlX2ZyZWUoKTt1cGRhdGUoKQo=' | base64 -d > game/Main.gd
           test -s game/Main.gd || { echo "ERROR: Main.gd decode failed"; exit 1; }
+          # v11.4 recovery: de v11.3 payload bevatte per ongeluk project.godot/data vóór het echte script.
+          # Snijd uitsluitend die corrupte prefix weg en behoud de volledige bestaande Main.gd vanaf 'extends Node'.
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path("game/Main.gd")
+          data = p.read_bytes()
+          marker = b"extends Node\n"
+          pos = data.find(marker)
+          if pos < 0:
+              raise SystemExit("ERROR: geldig begin 'extends Node' niet gevonden in Main.gd payload")
+          if pos:
+              print(f"v11.4: {pos} corrupte prefix-bytes verwijderd uit Main.gd")
+              p.write_bytes(data[pos:])
+          text = p.read_text(encoding="utf-8")
+          if not text.startswith("extends Node\n"):
+              raise SystemExit("ERROR: Main.gd recovery validation failed")
+          print(f"v11.4: Main.gd hersteld ({len(text.encode('utf-8'))} bytes)")
+          PY
           echo "Main.gd klaar ($(wc -c < game/Main.gd) bytes)"
 
           echo "=== Echte 3D Jazz (Universal Base Character) ophalen ==="
