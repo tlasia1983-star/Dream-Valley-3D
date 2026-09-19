@@ -269,7 +269,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cd game
+          cd "$GITHUB_WORKSPACE/game"
           echo "Importing project and checking GDScript/resources..."
           timeout 120s ../godot --headless --editor --path . --quit-after 10 2>&1 | tee ../godot-import.log
           if grep -iE "SCRIPT ERROR|Parse Error|Failed to load script" ../godot-import.log; then
@@ -281,7 +281,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cd game
+          cd "$GITHUB_WORKSPACE/game"
 
           # GitHub's Ubuntu Android image normally exports ANDROID_HOME in the shell.
           # Recover it defensively if a workflow context ever leaves it empty.
@@ -332,9 +332,12 @@ jobs:
           grep -F 'export_path="Dream-Valley-3D-v11.0.apk"' export_presets.cfg
           grep -F 'version/name="11.0"' export_presets.cfg
           grep -F 'architectures/arm64-v8a=true' export_presets.cfg
+          echo "PWD=$(pwd)"
+          ls -lh "$GITHUB_WORKSPACE/game/Main.gd" "$GITHUB_WORKSPACE/game/Main.tscn" "$GITHUB_WORKSPACE/game/assets/menu.jpg" "$GITHUB_WORKSPACE/game/assets/icon.png"
           for required in Main.gd Main.tscn assets/menu.jpg assets/icon.png; do
-            if [ ! -s "$required" ]; then
-              echo "ERROR: required build asset missing or empty: $required"
+            target="$GITHUB_WORKSPACE/game/$required"
+            if [ ! -s "$target" ]; then
+              echo "ERROR: required build asset missing or empty: $target"
               exit 1
             fi
           done
