@@ -6,11 +6,11 @@
 # v11.3 FIX: foutieve dubbele punt achter function-call(s) verwijderd
 # v11.3 CAREFUL REBUILD: alle lokale functie-aanroepen op argumentaantal gecontroleerd + echte Godot parse-gate
 # CI OPTIMIZED: grote base64 payloads in 4096-byte chunks, fail-fast en voortgangslogging
-# BUILD VERSION: v11.6
+# BUILD VERSION: v11.7
 # EDITION: ULTIMATE EDITION
 # BUILD: MAX GRAPHICS / HORSE RIDING / DIALOGUE / SAFE WORLD / HOME LIFE
 # ============================================================
-name: Dream Valley 3D v11.6 - PROJECT PATH FIX
+name: Dream Valley 3D v11.7 - PROJECT RECOVERY FIX
 on:
   workflow_dispatch:
 jobs:
@@ -77,6 +77,32 @@ jobs:
           print(f"v11.4: Main.gd hersteld ({len(text.encode('utf-8'))} bytes)")
           PY
           echo "Main.gd klaar ($(wc -c < game/Main.gd) bytes)"
+          # v11.7: project.godot zat in dezelfde beschadigde payload als Main.gd en werd nooit als los bestand geschreven.
+          cat > game/project.godot <<'EOF'
+          [application]
+          config/name="Dream Valley 3D"
+          run/main_scene="res://Main.tscn"
+          config/icon="res://assets/icon.png"
+
+          [display]
+          window/size/viewport_width=1280
+          window/size/viewport_height=720
+          window/stretch/mode="canvas_items"
+
+          [rendering]
+          renderer/rendering_method="gl_compatibility"
+          renderer/rendering_method.mobile="gl_compatibility"
+          textures/vram_compression/import_etc2_astc=true
+          textures/default_filters/use_nearest_mipmap_filter=false
+          lights_and_shadows/directional_shadow/size=2048
+          lights_and_shadows/positional_shadow/atlas_size=2048
+
+          [anti_aliasing]
+          quality/msaa_3d=2
+          quality/screen_space_aa=1
+          EOF
+          test -s game/project.godot || { echo "ERROR: project.godot generation failed"; exit 1; }
+          echo "project.godot opnieuw opgebouwd"
 
           echo "=== Echte 3D Jazz (Universal Base Character) ophalen ==="
           mkdir -p game/assets/jazz
