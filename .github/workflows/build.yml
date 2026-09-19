@@ -6,11 +6,11 @@
 # v11.3 FIX: foutieve dubbele punt achter function-call(s) verwijderd
 # v11.3 CAREFUL REBUILD: alle lokale functie-aanroepen op argumentaantal gecontroleerd + echte Godot parse-gate
 # CI OPTIMIZED: grote base64 payloads in 4096-byte chunks, fail-fast en voortgangslogging
-# BUILD VERSION: v11.9
+# BUILD VERSION: v11.10
 # EDITION: ULTIMATE EDITION
 # BUILD: MAX GRAPHICS / HORSE RIDING / DIALOGUE / SAFE WORLD / HOME LIFE
 # ============================================================
-name: Dream Valley 3D v11.9 - LIGHT UI CHARACTER FIX
+name: Dream Valley 3D v11.10 - CLEAN STABLE REBUILD
 on:
   workflow_dispatch:
 jobs:
@@ -75,94 +75,6 @@ jobs:
           if not text.startswith("extends Node\n"):
               raise SystemExit("ERROR: Main.gd recovery validation failed")
           print(f"v11.4: Main.gd hersteld ({len(text.encode('utf-8'))} bytes)")
-          PY
-          # v11.9 visual/UI hotfix based on device screenshot.
-          python3 - <<'PY'
-          from pathlib import Path
-          p=Path("game/Main.gd")
-          s=p.read_text(encoding="utf-8")
-          # Runtime hotfix injected before the original _process; keeps gameplay logic intact.
-          marker="func _process(delta):"
-          if marker not in s:
-              raise SystemExit("ERROR: _process marker ontbreekt voor v11.9 hotfix")
-          hot=r'''
-func v119_visual_ui_fix():
- # Temper the overexposed procedural world without changing gameplay.
- if is_instance_valid(world_env) and world_env.environment:
-  world_env.environment.ambient_light_energy=0.42
-  world_env.environment.background_energy_multiplier=0.55
-  world_env.environment.tonemap_mode=Environment.TONE_MAPPER_FILMIC
-  world_env.environment.tonemap_exposure=0.72
- if is_instance_valid(sun_light):
-  sun_light.light_energy=0.62
- # Reflow touch/action buttons: movement stays left; jump and actions stay right.
- var jump_btn:Button=null
- for n in get_tree().get_nodes_in_group("v119_none"):
-  pass
- var buttons:Array[Button]=[]
- if is_instance_valid(ui):
-  for n in ui.find_children("*","Button",true,false):
-   var b=n as Button
-   if not b: continue
-   buttons.append(b)
-   var t=b.text.to_upper()
-   if "SPRING" in t:
-    jump_btn=b
-   if "KLEDING" in t:
-    # Clothing is an action, not a permanent left-side block.
-    b.position=Vector2(1015,548); b.size=Vector2(205,58)
-   elif "VOER NOVA" in t:
-    b.position=Vector2(1015,200); b.size=Vector2(205,58)
-   elif "VERZORG" in t:
-    b.position=Vector2(1015,270); b.size=Vector2(205,58)
-   elif "FOTO" in t:
-    b.position=Vector2(1015,340); b.size=Vector2(205,58)
-   elif "WONEN" in t:
-    b.position=Vector2(1015,410); b.size=Vector2(205,58)
-   elif "RIJDEN" in t:
-    b.position=Vector2(1015,480); b.size=Vector2(205,58)
-   elif "INRICHTEN" in t:
-    b.position=Vector2(790,548); b.size=Vector2(205,58)
- if jump_btn:
-  jump_btn.position=Vector2(1015,618); jump_btn.size=Vector2(205,58)
- # Prevent the large status panels from covering each other.
- var labels=[]
- if is_instance_valid(ui):
-  for n in ui.find_children("*","Label",true,false):
-   var l=n as Label
-   if l and l.position.y<180 and l.position.x<700:
-    labels.append(l)
-  labels.sort_custom(func(a,b): return a.position.y < b.position.y)
-  var yy=12.0
-  for l in labels:
-   l.position.y=yy
-   yy+=max(28.0,min(l.size.y,70.0)+4.0)
-
-func v119_fix_character_blocks():
- # Hide only obviously oversized box-like clothing meshes attached to Jazz.
- if not is_instance_valid(player): return
- for n in player.find_children("*","MeshInstance3D",true,false):
-  var m=n as MeshInstance3D
-  if not m or not m.mesh: continue
-  var a=m.mesh.get_aabb().size
-  var low=m.name.to_lower()
-  if ("shirt" in low or "cloth" in low or "body" in low or "torso" in low) and a.x>1.15 and a.y>1.15 and a.z>0.55:
-   m.visible=false
-
-'''
-          s=s.replace(marker,hot+marker,1)
-          # Call fixes once after ready has created UI/world/player.
-          ready="func _ready():"
-          idx=s.find(ready)
-          if idx<0: raise SystemExit("ERROR: _ready ontbreekt")
-          # defer ensures all original _ready construction has completed.
-          insert='\n call_deferred("v119_visual_ui_fix")\n call_deferred("v119_fix_character_blocks")'
-          # place deferred calls just before next top-level func after _ready
-          nxt=s.find("\nfunc ",idx+len(ready))
-          if nxt<0: raise SystemExit("ERROR: einde _ready niet gevonden")
-          s=s[:nxt]+insert+s[nxt:]
-          p.write_text(s,encoding="utf-8")
-          print("v11.9 visual/UI hotfix toegevoegd")
           PY
           echo "Main.gd klaar ($(wc -c < game/Main.gd) bytes)"
           # v11.7: project.godot zat in dezelfde beschadigde payload als Main.gd en werd nooit als los bestand geschreven.
@@ -234,7 +146,7 @@ func v119_fix_character_blocks():
           export_filter="all_resources"
           include_filter=""
           exclude_filter=""
-          export_path="Dream-Valley-3D-v11.9.apk"
+          export_path="Dream-Valley-3D-v11.10.apk"
           script_export_mode=2
 
           [preset.0.options]
@@ -247,8 +159,8 @@ func v119_fix_character_blocks():
           keystore/debug_password="android"
           architectures/armeabi-v7a=false
           architectures/arm64-v8a=true
-          version/code=1190
-          version/name="11.9"
+          version/code=1110
+          version/name="11.10"
           package/unique_name="com.dreamvalley.game"
           package/name="Dream Valley 3D"
           package/signed=true
@@ -473,8 +385,8 @@ func v119_fix_character_blocks():
 
           echo "=== Deep preflight ==="
           grep -F 'textures/vram_compression/import_etc2_astc=true' "$GITHUB_WORKSPACE/game/project.godot"
-          grep -F 'export_path="Dream-Valley-3D-v11.9.apk"' export_presets.cfg
-          grep -F 'version/name="11.9"' export_presets.cfg
+          grep -F 'export_path="Dream-Valley-3D-v11.10.apk"' export_presets.cfg
+          grep -F 'version/name="11.10"' export_presets.cfg
           grep -F 'architectures/arm64-v8a=true' export_presets.cfg
           echo "PWD=$(pwd)"
           ls -lh "$GITHUB_WORKSPACE/game/Main.gd" "$GITHUB_WORKSPACE/game/Main.tscn" "$GITHUB_WORKSPACE/game/assets/menu.jpg" "$GITHUB_WORKSPACE/game/assets/icon.png"
@@ -502,12 +414,12 @@ func v119_fix_character_blocks():
 
           echo "=== Validate project pack before APK ==="
           mkdir -p ci-test
-          timeout 300s ../godot --headless --verbose --path . --export-pack "Android" "ci-test/Dream-Valley-v11.9-test.pck" 2>&1 | tee ../godot-pack-test.log
-          test -s ci-test/Dream-Valley-v11.9-test.pck
+          timeout 300s ../godot --headless --verbose --path . --export-pack "Android" "ci-test/Dream-Valley-v11.10-test.pck" 2>&1 | tee ../godot-pack-test.log
+          test -s ci-test/Dream-Valley-v11.10-test.pck
 
           echo "=== Export Android debug APK ==="
           set +e
-          timeout 900s ../godot --headless --verbose --path . --export-debug "Android" "Dream-Valley-3D-v11.9.apk" 2>&1 | tee ../godot-export.log
+          timeout 900s ../godot --headless --verbose --path . --export-debug "Android" "Dream-Valley-3D-v11.10.apk" 2>&1 | tee ../godot-export.log
           GODOT_EXIT=${PIPESTATUS[0]}
           set -e
 
@@ -517,13 +429,13 @@ func v119_fix_character_blocks():
             exit "$GODOT_EXIT"
           fi
 
-          test -s Dream-Valley-3D-v11.9.apk
+          test -s Dream-Valley-3D-v11.10.apk
           echo "=== APK CREATED SUCCESSFULLY ==="
-          ls -lh Dream-Valley-3D-v11.9.apk
+          ls -lh Dream-Valley-3D-v11.10.apk
 
       - name: Upload installable APK
         uses: actions/upload-artifact@v4
         with:
-          name: Dream-Valley-3D-v11.9-APK
-          path: game/Dream-Valley-3D-v11.9.apk
+          name: Dream-Valley-3D-v11.10-APK
+          path: game/Dream-Valley-3D-v11.10.apk
           if-no-files-found: error
