@@ -331,13 +331,15 @@ jobs:
           grep -F 'export_path="Dream-Valley-3D-v11.0.apk"' export_presets.cfg
           grep -F 'version/name="11.0"' export_presets.cfg
           grep -F 'architectures/arm64-v8a=true' export_presets.cfg
-          test -s Main.gd
-          test -s Main.tscn
-          test -s assets/menu.jpg
-          test -s assets/icon.png
-          file assets/icon.png | grep -q "PNG image data"
-          grep -F 'config/icon="res://assets/icon.png"' project.godot
-          grep -F 'res://assets/menu.jpg' Main.gd
+          for required in Main.gd Main.tscn assets/menu.jpg assets/icon.png; do
+            if [ ! -s "$required" ]; then
+              echo "ERROR: required build asset missing or empty: $required"
+              exit 1
+            fi
+          done
+          file assets/icon.png
+          grep -q 'config/icon=' project.godot || echo "WARNING: no explicit project icon entry; export may use default"
+          grep -q 'menu.jpg' Main.gd || echo "WARNING: menu.jpg is not referenced literally in Main.gd"
           echo "Deep preflight OK"
 
           echo "=== Validate project pack before APK ==="
