@@ -6,11 +6,11 @@
 # v11.3 FIX: foutieve dubbele punt achter function-call(s) verwijderd
 # v11.3 CAREFUL REBUILD: alle lokale functie-aanroepen op argumentaantal gecontroleerd + echte Godot parse-gate
 # CI OPTIMIZED: grote base64 payloads in 4096-byte chunks, fail-fast en voortgangslogging
-# BUILD VERSION: v11.7
+# BUILD VERSION: v11.8
 # EDITION: ULTIMATE EDITION
 # BUILD: MAX GRAPHICS / HORSE RIDING / DIALOGUE / SAFE WORLD / HOME LIFE
 # ============================================================
-name: Dream Valley 3D v11.7 - PROJECT RECOVERY FIX
+name: Dream Valley 3D v11.8 - FULL PREFLIGHT FIX
 on:
   workflow_dispatch:
 jobs:
@@ -103,6 +103,17 @@ jobs:
           EOF
           test -s game/project.godot || { echo "ERROR: project.godot generation failed"; exit 1; }
           echo "project.godot opnieuw opgebouwd"
+          # v11.8: rebuild the missing main scene explicitly. Main.gd is the root controller.
+          cat > game/Main.tscn <<'EOF'
+          [gd_scene load_steps=2 format=3]
+
+          [ext_resource path="res://Main.gd" type="Script" id="1_main"]
+
+          [node name="Main" type="Node"]
+          script = ExtResource("1_main")
+          EOF
+          test -s game/Main.tscn || { echo "ERROR: Main.tscn generation failed"; exit 1; }
+          echo "Main.tscn opnieuw opgebouwd"
 
           echo "=== Echte 3D Jazz (Universal Base Character) ophalen ==="
           mkdir -p game/assets/jazz
@@ -135,7 +146,7 @@ jobs:
           export_filter="all_resources"
           include_filter=""
           exclude_filter=""
-          export_path="Dream-Valley-3D-v11.3.apk"
+          export_path="Dream-Valley-3D-v11.8.apk"
           script_export_mode=2
 
           [preset.0.options]
@@ -148,8 +159,8 @@ jobs:
           keystore/debug_password="android"
           architectures/armeabi-v7a=false
           architectures/arm64-v8a=true
-          version/code=1130
-          version/name="11.3"
+          version/code=1180
+          version/name="11.8"
           package/unique_name="com.dreamvalley.game"
           package/name="Dream Valley 3D"
           package/signed=true
@@ -274,7 +285,7 @@ jobs:
           # Godot 4.3+ stores editor settings per minor version.
           # Write the 4.4 file directly instead of relying on an EditorSettings script.
           mkdir -p "$HOME/.config/godot"
-          cat > "$HOME/.config/godot/editor_settings-4.4.tres" <<EOF
+          cat > "$HOME/.config/godot/editor_settings-4.7.tres" <<EOF
           [gd_resource type="EditorSettings" format=3]
 
           [resource]
@@ -287,7 +298,7 @@ jobs:
           export/android/shutdown_adb_on_exit = true
           EOF
 
-          echo "=== Godot 4.4 editor settings ==="
+          echo "=== Godot 4.7 editor settings ==="
           ls -la "$HOME/.config/godot/" || true
           cat "$HOME/.config/godot/editor_settings-4.7.tres" 2>/dev/null || true
 
@@ -303,7 +314,7 @@ jobs:
           echo "GODOT_ANDROID_KEYSTORE_DEBUG_USER=androiddebugkey" >> "$GITHUB_ENV"
           echo "GODOT_ANDROID_KEYSTORE_DEBUG_PASSWORD=android" >> "$GITHUB_ENV"
 
-          echo "Godot 4.4 Android CI configuration OK"
+          echo "Godot 4.7 Android CI configuration OK"
 
       - name: Parse-check Main.gd with Godot
         shell: bash
@@ -321,7 +332,7 @@ jobs:
           cd "$GITHUB_WORKSPACE/game"
           echo "Importing project and checking GDScript/resources..."
           timeout 120s ../godot --headless --editor --path . --quit-after 10 2>&1 | tee ../godot-import.log
-          if grep -iE "SCRIPT ERROR|Parse Error|Failed to load script" ../godot-import.log; then
+          if grep -iE "SCRIPT ERROR|Parse Error|Failed to load script|Cannot open file|Failed loading resource|Failed to load resource|ERROR:" ../godot-import.log; then
             echo "Project contains a script/import error."
             exit 1
           fi
@@ -365,7 +376,7 @@ jobs:
           ls -lh "$HOME/.local/share/godot/export_templates/4.7.2.stable/android_"*.apk
 
           echo "=== Godot editor settings actually used ==="
-          cat "$HOME/.config/godot/editor_settings-4.4.tres"
+          cat "$HOME/.config/godot/editor_settings-4.7.tres"
 
           echo "=== Android preset ==="
           cat export_presets.cfg
@@ -374,8 +385,8 @@ jobs:
 
           echo "=== Deep preflight ==="
           grep -F 'textures/vram_compression/import_etc2_astc=true' "$GITHUB_WORKSPACE/game/project.godot"
-          grep -F 'export_path="Dream-Valley-3D-v11.3.apk"' export_presets.cfg
-          grep -F 'version/name="11.3"' export_presets.cfg
+          grep -F 'export_path="Dream-Valley-3D-v11.8.apk"' export_presets.cfg
+          grep -F 'version/name="11.8"' export_presets.cfg
           grep -F 'architectures/arm64-v8a=true' export_presets.cfg
           echo "PWD=$(pwd)"
           ls -lh "$GITHUB_WORKSPACE/game/Main.gd" "$GITHUB_WORKSPACE/game/Main.tscn" "$GITHUB_WORKSPACE/game/assets/menu.jpg" "$GITHUB_WORKSPACE/game/assets/icon.png"
@@ -389,16 +400,26 @@ jobs:
           file assets/icon.png
           grep -q 'config/icon=' project.godot || echo "WARNING: no explicit project icon entry; export may use default"
           grep -q 'menu.jpg' Main.gd || echo "WARNING: menu.jpg is not referenced literally in Main.gd"
+          # Validate the logical next failure points before spending time on export.
+          grep -F 'run/main_scene="res://Main.tscn"' project.godot
+          grep -F 'script = ExtResource("1_main")' Main.tscn
+          grep -F 'name="Android"' export_presets.cfg
+          test -s assets/jazz/Jazz.glb
+          test -s assets/jazz/Hair_Long.gltf
+          test -s assets/jazz/Hair_Long.bin
+          test -s sounds/dream_valley_menu.wav
+          test -s sounds/dream_valley_game.wav
+          ../godot --headless --path . --check-only --script Main.gd
           echo "Deep preflight OK"
 
           echo "=== Validate project pack before APK ==="
           mkdir -p ci-test
-          timeout 300s ../godot --headless --verbose --path . --export-pack "Android" "ci-test/Dream-Valley-v11.3-test.pck" 2>&1 | tee ../godot-pack-test.log
-          test -s ci-test/Dream-Valley-v11.3-test.pck
+          timeout 300s ../godot --headless --verbose --path . --export-pack "Android" "ci-test/Dream-Valley-v11.8-test.pck" 2>&1 | tee ../godot-pack-test.log
+          test -s ci-test/Dream-Valley-v11.8-test.pck
 
           echo "=== Export Android debug APK ==="
           set +e
-          timeout 900s ../godot --headless --verbose --path . --export-debug "Android" "Dream-Valley-3D-v11.3.apk" 2>&1 | tee ../godot-export.log
+          timeout 900s ../godot --headless --verbose --path . --export-debug "Android" "Dream-Valley-3D-v11.8.apk" 2>&1 | tee ../godot-export.log
           GODOT_EXIT=${PIPESTATUS[0]}
           set -e
 
@@ -408,13 +429,13 @@ jobs:
             exit "$GODOT_EXIT"
           fi
 
-          test -s Dream-Valley-3D-v11.3.apk
+          test -s Dream-Valley-3D-v11.8.apk
           echo "=== APK CREATED SUCCESSFULLY ==="
-          ls -lh Dream-Valley-3D-v11.3.apk
+          ls -lh Dream-Valley-3D-v11.8.apk
 
       - name: Upload installable APK
         uses: actions/upload-artifact@v4
         with:
-          name: Dream-Valley-3D-v11.3-APK
-          path: game/Dream-Valley-3D-v11.3.apk
+          name: Dream-Valley-3D-v11.8-APK
+          path: game/Dream-Valley-3D-v11.8.apk
           if-no-files-found: error
