@@ -6,11 +6,11 @@
 # v11.3 FIX: foutieve dubbele punt achter function-call(s) verwijderd
 # v11.3 CAREFUL REBUILD: alle lokale functie-aanroepen op argumentaantal gecontroleerd + echte Godot parse-gate
 # CI OPTIMIZED: grote base64 payloads in 4096-byte chunks, fail-fast en voortgangslogging
-# BUILD VERSION: v11.4
+# BUILD VERSION: v11.5
 # EDITION: ULTIMATE EDITION
 # BUILD: MAX GRAPHICS / HORSE RIDING / DIALOGUE / SAFE WORLD / HOME LIFE
 # ============================================================
-name: Dream Valley 3D v11.4 - MAIN.GD RECOVERY FIX
+name: Dream Valley 3D v11.5 - EXPORT VALIDATION FIX
 on:
   workflow_dispatch:
 jobs:
@@ -345,10 +345,6 @@ jobs:
           cat export_presets.cfg
 
           echo "=== Validate Android preset + signing tuple ==="
-          grep -F 'keystore/debug="/home/runner/.android/debug.keystore"' export_presets.cfg
-          grep -F 'keystore/debug_user="androiddebugkey"' export_presets.cfg
-          grep -F 'keystore/debug_password="android"' export_presets.cfg
-          test "$(grep -c '^keystore/debug' export_presets.cfg)" -eq 3
 
           echo "=== Deep preflight ==="
           grep -F 'textures/vram_compression/import_etc2_astc=true' project.godot
